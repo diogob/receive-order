@@ -2,7 +2,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeOperators   #-}
 module ReceiveOrder
-    ( startAppRenamed
+    ( startApp
     , app
     ) where
 
@@ -22,8 +22,8 @@ $(deriveJSON defaultOptions ''User)
 
 type API = "users" :> Post '[JSON] [User]
 
-startAppRenamed :: IO ()
-startAppRenamed = run 8080 app
+startApp :: IO ()
+startApp = run 8080 app
 
 app :: Application
 app = serve api server

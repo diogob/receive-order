@@ -3,4 +3,4 @@ module Main where
 import           ReceiveOrder
 
 main :: IO ()
-main = startAppRenamed
+main = startApp
