@@ -17,8 +17,8 @@ import ReceiveOrder.Handlers
 
 type API = "users" :> Post '[JSON] [User]
 
-startApp :: IO ()
-startApp = run 8080 app
+startApp :: Port -> IO ()
+startApp = flip run app
 
 app :: Application
 app = serve api server

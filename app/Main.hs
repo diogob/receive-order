@@ -1,6 +1,9 @@
 module Main where
 
 import           ReceiveOrder.Api
+import           ReceiveOrder.Config
 
 main :: IO ()
-main = startApp
+main = do
+  conf <- readOptions
+  startApp $ port conf
