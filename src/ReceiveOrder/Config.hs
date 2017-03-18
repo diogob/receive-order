@@ -13,7 +13,7 @@ import Network.Wai.Handler.Warp (Port)
 
 -- | Data type to store all command line options
 data AppConfig = AppConfig
-  { configDatabase  :: Text
+  { pgConnection  :: Text
   , port :: Port
   }
 
