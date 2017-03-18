@@ -1,6 +1,6 @@
 module Main where
 
-import           ReceiveOrder
+import           ReceiveOrder.Api
 
 main :: IO ()
 main = startApp
