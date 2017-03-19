@@ -15,7 +15,8 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     ReceiveOrder.Api
+  exposed-modules:     Domain
+                     , ReceiveOrder.Api
                      , ReceiveOrder.Handlers
                      , ReceiveOrder.Database
   other-modules:       Paths_receive_order
@@ -23,6 +24,7 @@ library
                      , aeson
                      , servant-server
                      , text
+                     , time
                      , wai
                      , warp
                      , hasql
