@@ -38,4 +38,18 @@ data Quantity = Quantity
   } deriving(Eq, Show)
 
 buildReceiveOrder :: ReceiveOrderAttributes -> ReceiveOrder
-buildReceiveOrder = undefined
+buildReceiveOrder attributes = ReceiveOrder {
+  vendor             = vendorName attributes,
+  expectedDeliveryAt = Nothing,
+  reference          = Nothing,
+  receiveOrderItems  = map buildReceiveOrderItem $ receiveOrderItemsAttributes attributes
+  } where
+
+  buildReceiveOrderItem :: ReceiveOrderItemAttributes -> ReceiveOrderItem
+  buildReceiveOrderItem attributes = ReceiveOrderItem {
+    sku      = skuCode attributes,
+    quantity = Quantity {
+      value         = unitQuantityValue attributes,
+      unitOfMeasure = unitOfMeasureIntegrationKey attributes
+    }
+  }
