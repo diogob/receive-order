@@ -7,8 +7,6 @@ module ReceiveOrder.Api
     ) where
 
 import Data.Monoid
-import Data.Aeson
-import Data.Aeson.TH
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
@@ -18,6 +16,7 @@ import Data.String.Conversions (cs)
 
 import ReceiveOrder.Handlers
 import ReceiveOrder.Config
+import ReceiveOrder.Database
 
 type API = "users" :> Post '[JSON] [User]
 
@@ -36,5 +35,5 @@ api :: Proxy API
 api = Proxy
 
 server :: Pool -> Server API
-server = massCreate
+server = massCreate . createUser
 
