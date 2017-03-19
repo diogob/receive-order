@@ -1,30 +1,40 @@
 {-# LANGUAGE DataKinds       #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeOperators   #-}
-{-# LANGUAGE OverloadedStrings   #-}
 module ReceiveOrder.Api
     ( startApp
     , app
     ) where
 
+import Data.Monoid
 import Data.Aeson
 import Data.Aeson.TH
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
+import Hasql.Pool (Pool)
+import qualified Hasql.Pool as P
+import Data.String.Conversions (cs)
 
 import ReceiveOrder.Handlers
+import ReceiveOrder.Config
 
 type API = "users" :> Post '[JSON] [User]
 
-startApp :: Port -> IO ()
-startApp = flip run app
+startApp :: AppConfig -> IO ()
+startApp conf = do
+  putStrLn $ "Listening on port " <> show portNumber
+  pool <- P.acquire (10, 10, cs $ pgConnection conf)
+  run portNumber $ app pool
+  where
+    portNumber = port conf
 
-app :: Application
-app = serve api server
+app :: Pool -> Application
+app = serve api . server
 
 api :: Proxy API
 api = Proxy
 
-server :: Server API
+server :: Pool -> Server API
 server = massCreate
+

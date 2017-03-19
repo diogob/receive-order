@@ -28,7 +28,11 @@ library
                      , optparse-applicative
                      , optparse-text
                      , hasql
+                     , hasql-pool
                      , hasql-transaction
+                     , transformers
+                     , string-conversions
+
   default-language:    Haskell2010
   default-extensions:  OverloadedStrings
 
@@ -38,8 +42,6 @@ executable receive-order-api
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   build-depends:       base
                      , receive-order
-                     , hasql-pool
-                     , string-conversions
   default-language:    Haskell2010
   default-extensions:  OverloadedStrings
 

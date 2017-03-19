@@ -11,6 +11,11 @@ import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
 import Data.Text
+import Hasql.Pool (Pool)
+import Hasql.Transaction
+import Hasql.Transaction (IsolationLevel (..), Mode (..))
+import Hasql.Transaction.Sessions (transaction)
+import Control.Monad.IO.Class
 
 data User = User
   { userId        :: Int
@@ -20,8 +25,8 @@ data User = User
 
 $(deriveJSON defaultOptions ''User)
 
-massCreate :: Handler [User]
-massCreate = return users
+massCreate :: Pool -> Handler [User]
+massCreate _ = return users
 
 {-
 massCreate = do
