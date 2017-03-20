@@ -1,4 +1,4 @@
-module ReceiveOrder.Config ( prettyVersion
+module Config ( prettyVersion
                            , readOptions
                            , AppConfig (..)
                            ) where
