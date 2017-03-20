@@ -49,6 +49,7 @@ executable receive-order-api
 test-suite receive-order-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
+  other-modules:     ApiSpec
   main-is:             Spec.hs
   build-depends:       base
                      , receive-order
