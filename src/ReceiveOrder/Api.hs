@@ -4,6 +4,7 @@
 module ReceiveOrder.Api
     ( server
     , api
+    , serve
     ) where
 
 import Servant

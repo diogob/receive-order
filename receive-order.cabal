@@ -47,7 +47,6 @@ executable receive-order-api
                      , warp
                      , hasql
                      , hasql-pool
-                     , servant-server
                      , string-conversions
 
   default-language:    Haskell2010
@@ -64,6 +63,7 @@ test-suite receive-order-test
                      , hspec-wai
                      , hspec-wai-json
                      , aeson
+                     , hasql-pool
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
   default-language:    Haskell2010
   default-extensions:  OverloadedStrings

@@ -1,11 +1,11 @@
 module Main where
 
-import           ReceiveOrder.Api
+import           Data.String.Conversions
+import           Hasql.Pool               (acquire)
+import           Network.Wai.Handler.Warp
+
 import           Config
-import Hasql.Pool (Pool, acquire)
-import Servant
-import Data.String.Conversions
-import Network.Wai.Handler.Warp
+import           ReceiveOrder.Api
 
 main :: IO ()
 main = readOptions >>= startApp
@@ -17,6 +17,4 @@ startApp conf = do
   run portNumber $ app pool
   where
     portNumber = port conf
-
-app :: Pool -> Application
-app = serve api . server
+    app = serve api . server
