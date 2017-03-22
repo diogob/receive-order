@@ -13,7 +13,7 @@ import Domain
 import ReceiveOrder.Handlers
 import ReceiveOrder.Database
 
-type API = "receive_orders" :> Post '[JSON] [ReceiveOrder]
+type API = "receive_orders" :> ReqBody '[JSON] [ReceiveOrderAttributes] :> Post '[JSON] [ReceiveOrder]
 
 api :: Proxy API
 api = Proxy

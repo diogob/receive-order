@@ -3,17 +3,13 @@ module ReceiveOrder.Handlers
   ) where
 
 import Servant
+import Data.String.Conversions
 
 import ReceiveOrder.Database
 import Domain
 
-massCreate :: ([ReceiveOrderAttributes] -> Either Error [ReceiveOrder]) -> Handler [ReceiveOrder]
-massCreate _ = return receiveOrders
-
-{-
-we should just mapLeft on the input function
-massCreate = do
-  _ <- throwError $ err503 { errBody = errorMessage }
+massCreate :: ([ReceiveOrderAttributes] -> Either Error [ReceiveOrder]) -> [ReceiveOrderAttributes] -> Handler [ReceiveOrder]
+massCreate createFn attributes = either err return (createFn attributes)
   where
-    errorMessage = encode $ object ["message" .= ("Sorry" :: Text)]
--}
+    err :: Error -> Handler [ReceiveOrder]
+    err msg = throwError $ err503 { errBody = (cs . show) msg }
