@@ -7,7 +7,7 @@ import Hasql.Pool
 newtype Error = Error Text
 
 createUser :: Pool -> [ReceiveOrderAttributes] -> Either Error [ReceiveOrder]
-createUser _ _ = Right receiveOrders
+createUser _ = Right . fmap buildReceiveOrder
 
 receiveOrders :: [ReceiveOrder]
 receiveOrders = [
