@@ -6,5 +6,5 @@ import Hasql.Pool
 
 newtype Error = Error Text deriving (Show)
 
-createUser :: Pool -> [ReceiveOrderAttributes] -> Either Error [ReceiveOrder]
-createUser _ = Right . fmap buildReceiveOrder
+createUser :: Pool -> [ReceiveOrderAttributes] -> IO (Either Error [ReceiveOrder])
+createUser _ = return . Right . fmap buildReceiveOrder

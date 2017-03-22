@@ -4,12 +4,13 @@ module ReceiveOrder.Handlers
 
 import Servant
 import Data.String.Conversions
+import Control.Monad.Trans.Class (lift)
 
 import ReceiveOrder.Database
 import Domain
 
-massCreate :: ([ReceiveOrderAttributes] -> Either Error [ReceiveOrder]) -> [ReceiveOrderAttributes] -> Handler [ReceiveOrder]
-massCreate createFn attributes = either err return (createFn attributes)
+massCreate :: ([ReceiveOrderAttributes] -> IO (Either Error [ReceiveOrder])) -> [ReceiveOrderAttributes] -> Handler [ReceiveOrder]
+massCreate createFn attributes = lift (createFn attributes) >>= either err return
   where
     err :: Error -> Handler [ReceiveOrder]
     err msg = throwError $ err503 { errBody = (cs . show) msg }
