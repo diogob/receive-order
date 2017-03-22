@@ -1,14 +1,14 @@
 module ReceiveOrder.Handlers
   ( massCreate
-  , User
   ) where
 
 import Servant
 
 import ReceiveOrder.Database
+import Domain
 
-massCreate :: ([User] -> Either Error [User]) -> Handler [User]
-massCreate _ = return users
+massCreate :: ([ReceiveOrderAttributes] -> Either Error [ReceiveOrder]) -> Handler [ReceiveOrder]
+massCreate _ = return receiveOrders
 
 {-
 we should just mapLeft on the input function

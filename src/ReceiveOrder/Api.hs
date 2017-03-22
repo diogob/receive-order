@@ -1,5 +1,4 @@
 {-# LANGUAGE DataKinds       #-}
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeOperators   #-}
 module ReceiveOrder.Api
     ( server
@@ -10,14 +9,14 @@ module ReceiveOrder.Api
 import Servant
 import Hasql.Pool (Pool)
 
+import Domain
 import ReceiveOrder.Handlers
 import ReceiveOrder.Database
 
-type API = "users" :> Post '[JSON] [User]
+type API = "receive_orders" :> Post '[JSON] [ReceiveOrder]
 
 api :: Proxy API
 api = Proxy
 
 server :: Pool -> Server API
 server = massCreate . createUser
-

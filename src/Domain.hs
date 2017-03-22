@@ -1,3 +1,5 @@
+{-# LANGUAGE TemplateHaskell #-}
+
 module Domain
   ( buildReceiveOrder
   , Quantity(..)
@@ -8,17 +10,18 @@ module Domain
   ) where
 
 import Data.Time.Clock
+import Data.Aeson.TH (deriveJSON, defaultOptions)
 
 data ReceiveOrderAttributes = ReceiveOrderAttributes
   { vendorName                  :: String
   , receiveOrderItemsAttributes :: [ReceiveOrderItemAttributes]
-  }
+  } deriving (Show, Eq)
 
 data ReceiveOrderItemAttributes = ReceiveOrderItemAttributes
   { skuCode                     :: String
   , unitQuantityValue           :: Double
   , unitOfMeasureIntegrationKey :: String
-  }
+  } deriving (Show, Eq)
 
 data ReceiveOrder = ReceiveOrder
   { vendor             :: String
@@ -37,6 +40,12 @@ data Quantity = Quantity
   , unitOfMeasure :: String
   } deriving(Eq, Show)
 
+$(deriveJSON defaultOptions ''ReceiveOrderAttributes)
+$(deriveJSON defaultOptions ''ReceiveOrderItemAttributes)
+$(deriveJSON defaultOptions ''ReceiveOrder)
+$(deriveJSON defaultOptions ''ReceiveOrderItem)
+$(deriveJSON defaultOptions ''Quantity)
+
 buildReceiveOrder :: ReceiveOrderAttributes -> ReceiveOrder
 buildReceiveOrder attributes = ReceiveOrder {
   vendor             = vendorName attributes,
@@ -46,10 +55,10 @@ buildReceiveOrder attributes = ReceiveOrder {
   } where
 
   buildReceiveOrderItem :: ReceiveOrderItemAttributes -> ReceiveOrderItem
-  buildReceiveOrderItem attributes = ReceiveOrderItem {
-    sku      = skuCode attributes,
+  buildReceiveOrderItem itemAttributes = ReceiveOrderItem {
+    sku      = skuCode itemAttributes,
     quantity = Quantity {
-      value         = unitQuantityValue attributes,
-      unitOfMeasure = unitOfMeasureIntegrationKey attributes
+      value         = unitQuantityValue itemAttributes,
+      unitOfMeasure = unitOfMeasureIntegrationKey itemAttributes
     }
   }

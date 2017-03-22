@@ -10,13 +10,13 @@ import Test.Hspec.Wai
 import Test.Hspec.Wai.JSON
 
 spec :: Spec
-spec = with ((acquire (10, 10, "postgres://localhost/receive_order_test")) >>= (return . app)) $
-    describe "POST /users" $ do
+spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")) $
+    describe "POST /receive_orders" $ do
         it "responds with 200" $
-            post "/users" [json|""|] `shouldRespondWith` 200
-        it "responds with [User]" $ do
-            let users = [json| [{"userId":1,"userFirstName":"Isaac","userLastName":"Newton"},{"userId":2,"userFirstName":"Albert","userLastName":"Einstein"}] |]
-            post "/users" [json|""|] `shouldRespondWith` users
+            post "/receive_orders" [json|""|] `shouldRespondWith` 200
+        it "responds with [ReceiveOrder]" $ do
+            let users = [json| [{"vendor":"test vendor","expectedDeliveryAt":null,"reference":null,"receiveOrderItems":[{"sku":"testsku","quantity":{"value":1.0,"unitOfMeasure":"uomkey"}}]}] |]
+            post "/receive_orders" [json|""|] `shouldRespondWith` users
 
   where
     app = serve api . server
