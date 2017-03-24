@@ -54,13 +54,19 @@ $(deriveJSON defaultOptions ''ReceiveOrder)
 $(deriveJSON defaultOptions ''ReceiveOrderItem)
 $(deriveJSON defaultOptions ''Quantity)
 
+maxNumberOfReceiveOrderItems :: Int
+maxNumberOfReceiveOrderItems = 100
+
 buildReceiveOrder :: ReceiveOrderAttributes -> Either ReceiveOrderErrors ReceiveOrder
-buildReceiveOrder attributes = Right $ ReceiveOrder {
-  vendor             = vendorName attributes,
-  expectedDeliveryAt = Nothing,
-  reference          = Nothing,
-  receiveOrderItems  = map buildReceiveOrderItem $ receiveOrderItemsAttributes attributes
-  } where
+buildReceiveOrder = validateReceiveOrder . receiveOrderFromAttributes  where
+
+  receiveOrderFromAttributes :: ReceiveOrderAttributes -> ReceiveOrder
+  receiveOrderFromAttributes attributes = ReceiveOrder {
+    vendor             = vendorName attributes,
+    expectedDeliveryAt = Nothing,
+    reference          = Nothing,
+    receiveOrderItems  = map buildReceiveOrderItem $ receiveOrderItemsAttributes attributes
+  }
 
   buildReceiveOrderItem :: ReceiveOrderItemAttributes -> ReceiveOrderItem
   buildReceiveOrderItem itemAttributes = ReceiveOrderItem {
@@ -70,3 +76,14 @@ buildReceiveOrder attributes = Right $ ReceiveOrder {
       unitOfMeasure = unitOfMeasureIntegrationKey itemAttributes
     }
   }
+
+  validateReceiveOrder :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
+  validateReceiveOrder = validateNumberOfItems
+
+  validateNumberOfItems :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
+  validateNumberOfItems ro@ReceiveOrder { receiveOrderItems = items }
+    | length items > maxNumberOfReceiveOrderItems = Left $ ReceiveOrderErrors {
+      fullMessages = [ "can only have 100 order items per receive order" ],
+      errors = M.singleton "Receive Order" [ "can only have 100 order items per receive order" ]
+    }
+    | otherwise = Right ro

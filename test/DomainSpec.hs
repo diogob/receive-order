@@ -1,13 +1,8 @@
 module DomainSpec (spec) where
 
 import Domain
-  ( buildReceiveOrder
-  , Quantity(..)
-  , ReceiveOrder(..)
-  , ReceiveOrderItem(..)
-  , ReceiveOrderAttributes(..)
-  , ReceiveOrderItemAttributes(..)
-  )
+
+import qualified Data.Map as M
 
 import Test.Hspec
 
@@ -45,4 +40,20 @@ spec = describe "building a Receive Order from attributes" $ do
             quantity = Quantity { value = 42.0, unitOfMeasure = "Default UoM" }
           }
         ]
+      })
+
+  describe "when passed invalid attributes" $ do
+    it "rejects Receive Orders that have over 100 Receive Order Items" $ do
+      let attributes = ReceiveOrderAttributes {
+        vendorName                  = "Main Vendor",
+        receiveOrderItemsAttributes = take 101 . repeat $ ReceiveOrderItemAttributes {
+          skuCode                     = "First Sku",
+          unitQuantityValue           = 23.0,
+          unitOfMeasureIntegrationKey = "Default UoM"
+        }
+      }
+
+      buildReceiveOrder attributes `shouldBe` (Left ReceiveOrderErrors {
+        fullMessages = [ "can only have 100 order items per receive order" ],
+        errors = M.singleton "Receive Order" [ "can only have 100 order items per receive order" ]
       })

@@ -63,6 +63,7 @@ test-suite receive-order-test
                      , DomainSpec
   main-is:             Spec.hs
   build-depends:       base
+                     , containers
                      , receive-order
                      , hspec
                      , hspec-wai
