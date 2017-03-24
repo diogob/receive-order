@@ -34,6 +34,17 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
               }}|]
 
             postReceiveOrders receiveOrderAttributes `shouldRespondWith` receiveOrders
+
+        it "responds with errors for invalid attributes" $ do
+            let errors = [json|
+              {
+                "full_messages": [ "Can only have 100 order items per Receive Order" ],
+                "errors": {
+                  "base": [ "Can only have 100 order items per Receive Order" ]
+                }
+              }|]
+
+            postReceiveOrders erroneousAttributes `shouldRespondWith` errors { matchStatus = 503 }
   where
 
     app = serve api . server
@@ -50,4 +61,16 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
             unitOfMeasureIntegrationKey = "uomkey"
           }
         ]
+      }
+
+    erroneousAttributes :: M.Map String ReceiveOrderAttributes
+    erroneousAttributes = M.singleton "cid_1" $ 
+      ReceiveOrderAttributes {
+        vendorName = "test vendor",
+        receiveOrderItemsAttributes = (map (const ReceiveOrderItemAttributes 
+          {
+            skuCode = "testsku",
+            unitQuantityValue = 1.0,
+            unitOfMeasureIntegrationKey = "uomkey"
+          }) [0..100])
       }

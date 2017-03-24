@@ -31,6 +31,7 @@ library
                      , hasql
                      , hasql-pool
                      , hasql-transaction
+                     , http-types
                      , transformers
                      , string-conversions
                      , either

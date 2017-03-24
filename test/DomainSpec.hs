@@ -54,6 +54,6 @@ spec = describe "building a Receive Order from attributes" $ do
       }
 
       buildReceiveOrder attributes `shouldBe` (Left ReceiveOrderErrors {
-        fullMessages = [ "can only have 100 order items per receive order" ],
-        errors = M.singleton "Receive Order" [ "can only have 100 order items per receive order" ]
+        full_messages = [ "Can only have 100 order items per Receive Order" ],
+        errors = M.singleton "base" [ "Can only have 100 order items per Receive Order" ]
       })

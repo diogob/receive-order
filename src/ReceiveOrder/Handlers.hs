@@ -2,15 +2,25 @@ module ReceiveOrder.Handlers
   ( massCreate
   ) where
 
-import Servant
-import Data.String.Conversions
 import Control.Monad.Trans.Class (lift)
 
-import ReceiveOrder.Database
+import Data.Aeson (toJSON)
+import Data.Aeson.Text
+import Data.String.Conversions
+
 import Domain
+
+import Network.HTTP.Types
+
+import ReceiveOrder.Database
+
+import Servant
 
 massCreate :: (AttributesByCid -> IO (Either ReceiveOrderErrors ReceiveOrdersByCid)) -> AttributesByCid -> Handler ReceiveOrdersByCid
 massCreate createFn attributes = lift (createFn attributes) >>= either err return
   where
     err :: ReceiveOrderErrors -> Handler ReceiveOrdersByCid
-    err msg = throwError $ err503 { errBody = (cs . show) msg }
+    err msg = throwError $ err503 {
+      errBody = (cs . encodeToLazyText) msg,
+      errHeaders = [(hContentType, "application/json")]
+    }

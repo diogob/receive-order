@@ -30,7 +30,7 @@ data ReceiveOrderItemAttributes = ReceiveOrderItemAttributes
   } deriving (Show, Eq)
 
 data ReceiveOrderErrors = ReceiveOrderErrors
-  { fullMessages :: [String]
+  { full_messages :: [String]
   , errors :: M.Map String [String] 
   } deriving (Show, Eq)
 
@@ -92,7 +92,7 @@ validateReceiveOrder = validateNumberOfItems
   validateNumberOfItems ro@ReceiveOrder { receiveOrderItems = items }
     | length items > maxNumberOfReceiveOrderItems =
       Left $ ReceiveOrderErrors {
-        fullMessages = [ "can only have 100 order items per receive order" ],
-        errors = M.singleton "Receive Order" [ "can only have 100 order items per receive order" ]
+        full_messages = [ "Can only have 100 order items per Receive Order" ],
+        errors = M.singleton "base" [ "Can only have 100 order items per Receive Order" ]
       }
     | otherwise = Right ro
