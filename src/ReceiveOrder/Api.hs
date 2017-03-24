@@ -10,11 +10,10 @@ import Servant
 import Hasql.Pool (Pool)
 
 import Domain
-import Data.Map.Strict as M
 import ReceiveOrder.Handlers
 import ReceiveOrder.Database
 
-type API = "receive_orders" :> ReqBody '[JSON] (M.Map String ReceiveOrderAttributes) :> Post '[JSON] (M.Map String ReceiveOrder)
+type API = "receive_orders" :> ReqBody '[JSON] AttributesByCid :> Post '[JSON] ReceiveOrdersByCid
 
 api :: Proxy API
 api = Proxy

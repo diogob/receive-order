@@ -1,13 +1,15 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 module Domain
-  ( buildReceiveOrder
+  ( AttributesByCid(..)
+  , buildReceiveOrder
   , Quantity(..)
   , ReceiveOrder(..)
+  , ReceiveOrderAttributes(..)
   , ReceiveOrderErrors(..)
   , ReceiveOrderItem(..)
-  , ReceiveOrderAttributes(..)
   , ReceiveOrderItemAttributes(..)
+  , ReceiveOrdersByCid(..)
   ) where
 
 import Data.Aeson.TH (deriveJSON, defaultOptions)
@@ -18,6 +20,8 @@ data ReceiveOrderAttributes = ReceiveOrderAttributes
   { vendorName                  :: String
   , receiveOrderItemsAttributes :: [ReceiveOrderItemAttributes]
   } deriving (Show, Eq)
+
+type AttributesByCid = M.Map String ReceiveOrderAttributes
 
 data ReceiveOrderItemAttributes = ReceiveOrderItemAttributes
   { skuCode                     :: String
@@ -36,6 +40,8 @@ data ReceiveOrder = ReceiveOrder
   , reference          :: Maybe String
   , receiveOrderItems  :: [ReceiveOrderItem]
   } deriving(Eq, Show)
+
+type ReceiveOrdersByCid = M.Map String ReceiveOrder
 
 data ReceiveOrderItem = ReceiveOrderItem
   { sku      :: String
