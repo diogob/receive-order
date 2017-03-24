@@ -4,13 +4,15 @@ module Domain
   ( buildReceiveOrder
   , Quantity(..)
   , ReceiveOrder(..)
+  , ReceiveOrderErrors(..)
   , ReceiveOrderItem(..)
   , ReceiveOrderAttributes(..)
   , ReceiveOrderItemAttributes(..)
   ) where
 
-import Data.Time.Clock
 import Data.Aeson.TH (deriveJSON, defaultOptions)
+import qualified Data.Map.Strict as M
+import Data.Time.Clock
 
 data ReceiveOrderAttributes = ReceiveOrderAttributes
   { vendorName                  :: String
@@ -21,6 +23,11 @@ data ReceiveOrderItemAttributes = ReceiveOrderItemAttributes
   { skuCode                     :: String
   , unitQuantityValue           :: Double
   , unitOfMeasureIntegrationKey :: String
+  } deriving (Show, Eq)
+
+data ReceiveOrderErrors = ReceiveOrderErrors
+  { fullMessages :: [String]
+  , errors :: M.Map String [String] 
   } deriving (Show, Eq)
 
 data ReceiveOrder = ReceiveOrder
@@ -42,12 +49,13 @@ data Quantity = Quantity
 
 $(deriveJSON defaultOptions ''ReceiveOrderAttributes)
 $(deriveJSON defaultOptions ''ReceiveOrderItemAttributes)
+$(deriveJSON defaultOptions ''ReceiveOrderErrors)
 $(deriveJSON defaultOptions ''ReceiveOrder)
 $(deriveJSON defaultOptions ''ReceiveOrderItem)
 $(deriveJSON defaultOptions ''Quantity)
 
-buildReceiveOrder :: ReceiveOrderAttributes -> ReceiveOrder
-buildReceiveOrder attributes = ReceiveOrder {
+buildReceiveOrder :: ReceiveOrderAttributes -> Either ReceiveOrderErrors ReceiveOrder
+buildReceiveOrder attributes = Right $ ReceiveOrder {
   vendor             = vendorName attributes,
   expectedDeliveryAt = Nothing,
   reference          = Nothing,

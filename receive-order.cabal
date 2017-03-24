@@ -22,6 +22,7 @@ library
   other-modules:       Paths_receive_order
   build-depends:       base >= 4.7 && < 5
                      , aeson
+                     , containers
                      , servant-server
                      , text
                      , time

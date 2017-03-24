@@ -9,8 +9,8 @@ import Control.Monad.Trans.Class (lift)
 import ReceiveOrder.Database
 import Domain
 
-massCreate :: ([ReceiveOrderAttributes] -> IO (Either Error [ReceiveOrder])) -> [ReceiveOrderAttributes] -> Handler [ReceiveOrder]
+massCreate :: ([ReceiveOrderAttributes] -> IO (Either ReceiveOrderErrors [ReceiveOrder])) -> [ReceiveOrderAttributes] -> Handler [ReceiveOrder]
 massCreate createFn attributes = lift (createFn attributes) >>= either err return
   where
-    err :: Error -> Handler [ReceiveOrder]
+    err :: ReceiveOrderErrors -> Handler [ReceiveOrder]
     err msg = throwError $ err503 { errBody = (cs . show) msg }

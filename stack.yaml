@@ -9,4 +9,4 @@ extra-deps:
 - hasql-pool-0.4.1
 
 ghc-options:
-  receive-order: -O2 -Werror -Wall -fwarn-identities -fno-warn-redundant-constraints
+  receive-order: -O2 -Werror -fwarn-identities -fno-warn-redundant-constraints
