@@ -58,7 +58,8 @@ maxNumberOfReceiveOrderItems :: Int
 maxNumberOfReceiveOrderItems = 100
 
 buildReceiveOrder :: ReceiveOrderAttributes -> Either ReceiveOrderErrors ReceiveOrder
-buildReceiveOrder = validateReceiveOrder . receiveOrderFromAttributes  where
+buildReceiveOrder = validateReceiveOrder . receiveOrderFromAttributes
+  where
 
   receiveOrderFromAttributes :: ReceiveOrderAttributes -> ReceiveOrder
   receiveOrderFromAttributes attributes = ReceiveOrder {
@@ -77,13 +78,15 @@ buildReceiveOrder = validateReceiveOrder . receiveOrderFromAttributes  where
     }
   }
 
-  validateReceiveOrder :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
-  validateReceiveOrder = validateNumberOfItems
+validateReceiveOrder :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
+validateReceiveOrder = validateNumberOfItems
+  where
 
   validateNumberOfItems :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
   validateNumberOfItems ro@ReceiveOrder { receiveOrderItems = items }
-    | length items > maxNumberOfReceiveOrderItems = Left $ ReceiveOrderErrors {
-      fullMessages = [ "can only have 100 order items per receive order" ],
-      errors = M.singleton "Receive Order" [ "can only have 100 order items per receive order" ]
-    }
+    | length items > maxNumberOfReceiveOrderItems =
+      Left $ ReceiveOrderErrors {
+        fullMessages = [ "can only have 100 order items per receive order" ],
+        errors = M.singleton "Receive Order" [ "can only have 100 order items per receive order" ]
+      }
     | otherwise = Right ro
