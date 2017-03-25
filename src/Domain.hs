@@ -12,7 +12,9 @@ module Domain
   , ReceiveOrdersByCid(..)
   ) where
 
+import Control.Monad
 import Data.Aeson.TH (deriveJSON, defaultOptions)
+import Data.List
 import qualified Data.Map.Strict as M
 import Data.Time.Clock
 
@@ -72,7 +74,7 @@ buildReceiveOrder = validateReceiveOrder . receiveOrderFromAttributes
     vendor             = vendorName attributes,
     expectedDeliveryAt = Nothing,
     reference          = Nothing,
-    receiveOrderItems  = map buildReceiveOrderItem $ receiveOrderItemsAttributes attributes
+    receiveOrderItems  = buildReceiveOrderItem <$> receiveOrderItemsAttributes attributes
   }
 
   buildReceiveOrderItem :: ReceiveOrderItemAttributes -> ReceiveOrderItem
@@ -85,14 +87,30 @@ buildReceiveOrder = validateReceiveOrder . receiveOrderFromAttributes
   }
 
 validateReceiveOrder :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
-validateReceiveOrder = validateNumberOfItems
+validateReceiveOrder = validateNumberOfItems >=> validateUniqueSkusForItems
+
+validateNumberOfItems :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
+validateNumberOfItems ro@ReceiveOrder { receiveOrderItems = items }
+  | length items > maxNumberOfReceiveOrderItems =
+    Left $ ReceiveOrderErrors {
+      full_messages = [ "Can only have 100 order items per Receive Order" ],
+      errors = M.singleton "base" [ "Can only have 100 order items per Receive Order" ]
+    }
+  | otherwise = Right ro
+
+validateUniqueSkusForItems :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
+validateUniqueSkusForItems ro@ReceiveOrder { receiveOrderItems = items }
+  | length uniqueSkus < length allSkus =
+    Left $ ReceiveOrderErrors {
+      full_messages = [ "Sku already exists for this Receive Order" ],
+      errors = M.singleton "sku" [ "already exists for this Receive Order" ]
+    }
+  | otherwise = Right ro
+
   where
 
-  validateNumberOfItems :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
-  validateNumberOfItems ro@ReceiveOrder { receiveOrderItems = items }
-    | length items > maxNumberOfReceiveOrderItems =
-      Left $ ReceiveOrderErrors {
-        full_messages = [ "Can only have 100 order items per Receive Order" ],
-        errors = M.singleton "base" [ "Can only have 100 order items per Receive Order" ]
-      }
-    | otherwise = Right ro
+    allSkus :: [String]
+    allSkus = sku <$> items
+
+    uniqueSkus :: [String]
+    uniqueSkus = nub $ sku <$> items

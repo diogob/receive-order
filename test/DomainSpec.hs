@@ -46,14 +46,36 @@ spec = describe "building a Receive Order from attributes" $ do
     it "rejects Receive Orders that have over 100 Receive Order Items" $ do
       let attributes = ReceiveOrderAttributes {
         vendorName                  = "Main Vendor",
-        receiveOrderItemsAttributes = take 101 . repeat $ ReceiveOrderItemAttributes {
-          skuCode                     = "First Sku",
+        receiveOrderItemsAttributes = map (\n -> ReceiveOrderItemAttributes {
+          skuCode                     = "Sku " ++ (show n),
           unitQuantityValue           = 23.0,
           unitOfMeasureIntegrationKey = "Default UoM"
-        }
+        }) [0..101]
       }
 
       buildReceiveOrder attributes `shouldBe` (Left ReceiveOrderErrors {
         full_messages = [ "Can only have 100 order items per Receive Order" ],
         errors = M.singleton "base" [ "Can only have 100 order items per Receive Order" ]
+      })
+
+    it "requires that all of the Receive Order's Items' Skus are unique" $ do
+      let attributes = ReceiveOrderAttributes {
+        vendorName                  = "Main Vendor",
+        receiveOrderItemsAttributes = [
+          ReceiveOrderItemAttributes {
+            skuCode                     = "First Sku",
+            unitQuantityValue           = 23.0,
+            unitOfMeasureIntegrationKey = "Default UoM"
+          },
+          ReceiveOrderItemAttributes {
+            skuCode                     = "First Sku",
+            unitQuantityValue           = 42.0,
+            unitOfMeasureIntegrationKey = "Eaches UoM"
+          }
+        ]
+      }
+
+      buildReceiveOrder attributes `shouldBe` (Left ReceiveOrderErrors {
+        full_messages = [ "Sku already exists for this Receive Order" ],
+        errors = M.singleton "sku" [ "already exists for this Receive Order" ]
       })
