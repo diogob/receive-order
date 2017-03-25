@@ -19,4 +19,4 @@ api :: Proxy API
 api = Proxy
 
 server :: Pool -> Server API
-server = massCreate . createUser
+server = massCreate . createReceiveOrders
