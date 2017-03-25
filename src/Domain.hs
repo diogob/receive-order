@@ -3,6 +3,7 @@
 module Domain
   ( AttributesByCid(..)
   , buildReceiveOrder
+  , ByCid(..)
   , Quantity(..)
   , ReceiveOrder(..)
   , ReceiveOrderAttributes(..)
@@ -23,7 +24,7 @@ data ReceiveOrderAttributes = ReceiveOrderAttributes
   , receiveOrderItemsAttributes :: [ReceiveOrderItemAttributes]
   } deriving (Show, Eq)
 
-type AttributesByCid = M.Map String ReceiveOrderAttributes
+type AttributesByCid = ByCid ReceiveOrderAttributes
 
 data ReceiveOrderItemAttributes = ReceiveOrderItemAttributes
   { skuCode                     :: String
@@ -36,6 +37,8 @@ data ReceiveOrderErrors = ReceiveOrderErrors
   , errors :: M.Map String [String] 
   } deriving (Show, Eq)
 
+type ByCid = M.Map String
+
 data ReceiveOrder = ReceiveOrder
   { vendor             :: String
   , expectedDeliveryAt :: Maybe UTCTime
@@ -43,7 +46,7 @@ data ReceiveOrder = ReceiveOrder
   , receiveOrderItems  :: [ReceiveOrderItem]
   } deriving(Eq, Show)
 
-type ReceiveOrdersByCid = M.Map String ReceiveOrder
+type ReceiveOrdersByCid = ByCid ReceiveOrder
 
 data ReceiveOrderItem = ReceiveOrderItem
   { sku      :: String

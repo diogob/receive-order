@@ -16,11 +16,5 @@ import ReceiveOrder.Database
 
 import Servant
 
-massCreate :: (AttributesByCid -> IO (Either ReceiveOrderErrors ReceiveOrdersByCid)) -> AttributesByCid -> Handler ReceiveOrdersByCid
-massCreate createFn attributes = lift (createFn attributes) >>= either err return
-  where
-    err :: ReceiveOrderErrors -> Handler ReceiveOrdersByCid
-    err msg = throwError $ err503 {
-      errBody = (cs . encodeToLazyText) msg,
-      errHeaders = [(hContentType, "application/json")]
-    }
+massCreate :: (AttributesByCid -> IO (ByCid (Either ReceiveOrderErrors ReceiveOrder))) -> AttributesByCid -> Handler (ByCid (Either ReceiveOrderErrors ReceiveOrder))
+massCreate createFn attributes = lift (createFn attributes)

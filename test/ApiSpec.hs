@@ -35,16 +35,17 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
 
             postReceiveOrders receiveOrderAttributes `shouldRespondWith` receiveOrders
 
-        it "responds with errors for invalid attributes" $ do
+        it "responds with errors keyed by user-provided CIDs for invalid attributes" $ do
             let errors = [json|
-              {
-                "full_messages": [ "Can only have 100 order items per Receive Order" ],
-                "errors": {
-                  "base": [ "Can only have 100 order items per Receive Order" ]
+              { "cid_1": {
+                  "full_messages": [ "Can only have 100 order items per Receive Order" ],
+                  "errors": {
+                    "base": [ "Can only have 100 order items per Receive Order" ]
+                  }
                 }
               }|]
 
-            postReceiveOrders erroneousAttributes `shouldRespondWith` errors { matchStatus = 503 }
+            postReceiveOrders erroneousAttributes `shouldRespondWith` errors
   where
 
     app = serve api . server
