@@ -67,14 +67,17 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
         ]
       }
 
+    createItemAttributes :: Integer -> ReceiveOrderItemAttributes
+    createItemAttributes n = ReceiveOrderItemAttributes
+       {
+         sku_id                          = n,
+         unit_quantity_value             = 1.0,
+         unit_of_measure_integration_key = "uomkey"
+       } 
+
     erroneousAttributes :: ReceiveOrdersRequest
     erroneousAttributes = ReceiveOrdersRequest . M.singleton "cid_1" $ 
       ReceiveOrderAttributes {
         vendor_name         = "test vendor",
-        receive_order_items = (map (const ReceiveOrderItemAttributes 
-          {
-            sku_id                          = 1,
-            unit_quantity_value             = 1.0,
-            unit_of_measure_integration_key = "uomkey"
-          }) [0..100])
+        receive_order_items = map createItemAttributes [0..100]
       }
