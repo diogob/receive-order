@@ -14,14 +14,14 @@ spec = describe "building a Receive Order from attributes" $ do
         vendor_name         = "Main Vendor",
         receive_order_items = [
           ReceiveOrderItemAttributes {
-            skuCode                     = "First Sku",
-            unitQuantityValue           = 23.0,
-            unitOfMeasureIntegrationKey = "Default UoM"
+            sku_id                          = 1,
+            unit_quantity_value             = 23.0,
+            unit_of_measure_integration_key = "Default UoM"
           },
           ReceiveOrderItemAttributes {
-            skuCode                     = "Second Sku",
-            unitQuantityValue           = 42.0,
-            unitOfMeasureIntegrationKey = "Default UoM"
+            sku_id                          = 2,
+            unit_quantity_value             = 42.0,
+            unit_of_measure_integration_key = "Default UoM"
           }
         ]
       }
@@ -32,11 +32,11 @@ spec = describe "building a Receive Order from attributes" $ do
         reference          = Nothing,
         receiveOrderItems  = [
           ReceiveOrderItem {
-            sku      = "First Sku",
+            skuId    = 1,
             quantity = Quantity { value = 23.0, unitOfMeasure = "Default UoM" }
           },
           ReceiveOrderItem {
-            sku      = "Second Sku",
+            skuId    = 2,
             quantity = Quantity { value = 42.0, unitOfMeasure = "Default UoM" }
           }
         ]
@@ -44,13 +44,14 @@ spec = describe "building a Receive Order from attributes" $ do
 
   describe "when passed invalid attributes" $ do
     it "rejects Receive Orders that have over 100 Receive Order Items" $ do
+      let createItemAttributes = (\n -> ReceiveOrderItemAttributes {
+          sku_id                          = n,
+          unit_quantity_value             = 23.0,
+          unit_of_measure_integration_key = "Default UoM"
+      })
       let attributes = ReceiveOrderAttributes {
         vendor_name         = "Main Vendor",
-        receive_order_items = map (\n -> ReceiveOrderItemAttributes {
-          skuCode                     = "Sku " ++ (show n),
-          unitQuantityValue           = 23.0,
-          unitOfMeasureIntegrationKey = "Default UoM"
-        }) [0..101]
+        receive_order_items = map createItemAttributes [0..101]
       }
 
       buildReceiveOrder attributes `shouldBe` (Left ReceiveOrderErrors {
@@ -63,14 +64,14 @@ spec = describe "building a Receive Order from attributes" $ do
         vendor_name         = "Main Vendor",
         receive_order_items = [
           ReceiveOrderItemAttributes {
-            skuCode                     = "First Sku",
-            unitQuantityValue           = 23.0,
-            unitOfMeasureIntegrationKey = "Default UoM"
+            sku_id                          = 1,
+            unit_quantity_value             = 23.0,
+            unit_of_measure_integration_key = "Default UoM"
           },
           ReceiveOrderItemAttributes {
-            skuCode                     = "First Sku",
-            unitQuantityValue           = 42.0,
-            unitOfMeasureIntegrationKey = "Eaches UoM"
+            sku_id                          = 1,
+            unit_quantity_value             = 42.0,
+            unit_of_measure_integration_key = "Eaches UoM"
           }
         ]
       }

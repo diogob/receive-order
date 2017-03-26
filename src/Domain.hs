@@ -9,6 +9,7 @@ module Domain
   , ReceiveOrderErrors(..)
   , ReceiveOrderItem(..)
   , ReceiveOrderItemAttributes(..)
+  , ReceiveOrdersRequest(..)
   ) where
 
 import Control.Monad
@@ -17,15 +18,17 @@ import Data.List
 import qualified Data.Map.Strict as M
 import Data.Time.Clock
 
+data ReceiveOrdersRequest = ReceiveOrdersRequest { receive_orders :: ByCid ReceiveOrderAttributes }
+
 data ReceiveOrderAttributes = ReceiveOrderAttributes
   { vendor_name         :: String
   , receive_order_items :: [ReceiveOrderItemAttributes]
   } deriving (Show, Eq)
 
 data ReceiveOrderItemAttributes = ReceiveOrderItemAttributes
-  { skuCode                     :: String
-  , unitQuantityValue           :: Double
-  , unitOfMeasureIntegrationKey :: String
+  { sku_id                          :: Integer
+  , unit_quantity_value             :: Double
+  , unit_of_measure_integration_key :: String
   } deriving (Show, Eq)
 
 data ReceiveOrderErrors = ReceiveOrderErrors
@@ -43,7 +46,7 @@ data ReceiveOrder = ReceiveOrder
   } deriving(Eq, Show)
 
 data ReceiveOrderItem = ReceiveOrderItem
-  { sku      :: String
+  { skuId    :: Integer
   , quantity :: Quantity
   } deriving(Eq, Show)
 
@@ -57,6 +60,7 @@ $(deriveJSON defaultOptions ''ReceiveOrderItemAttributes)
 $(deriveJSON defaultOptions ''ReceiveOrderErrors)
 $(deriveJSON defaultOptions ''ReceiveOrder)
 $(deriveJSON defaultOptions ''ReceiveOrderItem)
+$(deriveJSON defaultOptions ''ReceiveOrdersRequest)
 $(deriveJSON defaultOptions ''Quantity)
 
 maxNumberOfReceiveOrderItems :: Int
@@ -76,10 +80,10 @@ buildReceiveOrder = validateReceiveOrder . receiveOrderFromAttributes
 
   buildReceiveOrderItem :: ReceiveOrderItemAttributes -> ReceiveOrderItem
   buildReceiveOrderItem itemAttributes = ReceiveOrderItem {
-    sku      = skuCode itemAttributes,
+    skuId    = sku_id itemAttributes,
     quantity = Quantity {
-      value         = unitQuantityValue itemAttributes,
-      unitOfMeasure = unitOfMeasureIntegrationKey itemAttributes
+      value         = unit_quantity_value itemAttributes,
+      unitOfMeasure = unit_of_measure_integration_key itemAttributes
     }
   }
 
@@ -106,8 +110,8 @@ validateUniqueSkusForItems ro@ReceiveOrder { receiveOrderItems = items }
 
   where
 
-    allSkus :: [String]
-    allSkus = sku <$> items
+    allSkus :: [Integer]
+    allSkus = skuId <$> items
 
-    uniqueSkus :: [String]
-    uniqueSkus = nub $ sku <$> items
+    uniqueSkus :: [Integer]
+    uniqueSkus = nub $ skuId <$> items

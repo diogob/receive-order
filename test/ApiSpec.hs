@@ -7,7 +7,6 @@ import Hasql.Pool (acquire)
 import Domain
 import qualified Data.Map.Strict as M
 import ReceiveOrder.Api
-import ReceiveOrder.Handlers
 import Test.Hspec
 import Test.Hspec.Wai
 import Test.Hspec.Wai.JSON
@@ -26,7 +25,7 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
                 "expectedDeliveryAt":null,
                 "reference":null,
                 "receiveOrderItems": [{
-                  "sku":"testsku",
+                  "skuId": 1,
                   "quantity": {
                     "value": 1.0,
                     "unitOfMeasure": "uomkey"
@@ -55,12 +54,12 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
     receiveOrderAttributes :: ReceiveOrdersRequest
     receiveOrderAttributes = ReceiveOrdersRequest . M.singleton "cid_1" $
       ReceiveOrderAttributes {
-        vendor_name = "test vendor",
+        vendor_name         = "test vendor",
         receive_order_items = [
           ReceiveOrderItemAttributes {
-            skuCode = "testsku",
-            unitQuantityValue = 1.0,
-            unitOfMeasureIntegrationKey = "uomkey"
+            sku_id                          = 1,
+            unit_quantity_value             = 1.0,
+            unit_of_measure_integration_key = "uomkey"
           }
         ]
       }
@@ -68,11 +67,11 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
     erroneousAttributes :: ReceiveOrdersRequest
     erroneousAttributes = ReceiveOrdersRequest . M.singleton "cid_1" $ 
       ReceiveOrderAttributes {
-        vendor_name = "test vendor",
+        vendor_name         = "test vendor",
         receive_order_items = (map (const ReceiveOrderItemAttributes 
           {
-            skuCode = "testsku",
-            unitQuantityValue = 1.0,
-            unitOfMeasureIntegrationKey = "uomkey"
+            sku_id                          = 1,
+            unit_quantity_value             = 1.0,
+            unit_of_measure_integration_key = "uomkey"
           }) [0..100])
       }

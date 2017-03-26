@@ -7,7 +7,6 @@ module ReceiveOrder.Handlers
 
 import Control.Monad.Trans.Class (lift)
 
-import Data.Aeson.TH (deriveJSON, defaultOptions)
 import Data.String.Conversions
 
 import Domain
@@ -15,10 +14,6 @@ import Domain
 import Network.HTTP.Types
 
 import Servant
-
-data ReceiveOrdersRequest = ReceiveOrdersRequest { receive_orders :: ByCid ReceiveOrderAttributes }
-
-$(deriveJSON defaultOptions ''ReceiveOrdersRequest)
 
 massCreate :: (ByCid ReceiveOrderAttributes -> IO (ByCid (Either ReceiveOrderErrors ReceiveOrder)))
   -> ReceiveOrdersRequest
