@@ -1,8 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 module Domain
-  ( AttributesByCid(..)
-  , buildReceiveOrder
+  ( buildReceiveOrder
   , ByCid(..)
   , Quantity(..)
   , ReceiveOrder(..)
@@ -10,7 +9,6 @@ module Domain
   , ReceiveOrderErrors(..)
   , ReceiveOrderItem(..)
   , ReceiveOrderItemAttributes(..)
-  , ReceiveOrdersByCid(..)
   ) where
 
 import Control.Monad
@@ -23,8 +21,6 @@ data ReceiveOrderAttributes = ReceiveOrderAttributes
   { vendorName                  :: String
   , receiveOrderItemsAttributes :: [ReceiveOrderItemAttributes]
   } deriving (Show, Eq)
-
-type AttributesByCid = ByCid ReceiveOrderAttributes
 
 data ReceiveOrderItemAttributes = ReceiveOrderItemAttributes
   { skuCode                     :: String
@@ -45,8 +41,6 @@ data ReceiveOrder = ReceiveOrder
   , reference          :: Maybe String
   , receiveOrderItems  :: [ReceiveOrderItem]
   } deriving(Eq, Show)
-
-type ReceiveOrdersByCid = ByCid ReceiveOrder
 
 data ReceiveOrderItem = ReceiveOrderItem
   { sku      :: String

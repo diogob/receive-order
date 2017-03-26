@@ -16,5 +16,7 @@ import ReceiveOrder.Database
 
 import Servant
 
-massCreate :: (AttributesByCid -> IO (ByCid (Either ReceiveOrderErrors ReceiveOrder))) -> AttributesByCid -> Handler (ByCid (Either ReceiveOrderErrors ReceiveOrder))
+massCreate :: (ByCid ReceiveOrderAttributes -> IO (ByCid (Either ReceiveOrderErrors ReceiveOrder)))
+  -> ByCid ReceiveOrderAttributes
+  -> Handler (ByCid (Either ReceiveOrderErrors ReceiveOrder))
 massCreate createFn attributes = lift (createFn attributes)
