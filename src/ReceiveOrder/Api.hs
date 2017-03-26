@@ -10,9 +10,9 @@ import Servant
 import Hasql.Pool (Pool)
 
 import Data.Aeson
-import Domain
-import ReceiveOrder.Handlers
 import ReceiveOrder.Database
+import ReceiveOrder.Domain
+import ReceiveOrder.Handlers
 
 type API = "receive_orders" :> ReqBody '[JSON] ReceiveOrdersRequest :> Post '[JSON] ReceiveOrdersResponse
 

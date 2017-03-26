@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module Domain
+module ReceiveOrder.Domain
   ( buildReceiveOrder
   , ByCid(..)
   , Quantity(..)

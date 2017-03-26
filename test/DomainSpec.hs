@@ -1,6 +1,6 @@
 module DomainSpec (spec) where
 
-import Domain
+import ReceiveOrder.Domain
 
 import qualified Data.Map as M
 

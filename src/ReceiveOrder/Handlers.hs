@@ -9,7 +9,7 @@ import Control.Monad.Trans.Class (lift)
 
 import Data.String.Conversions
 
-import Domain
+import ReceiveOrder.Domain
 
 import Network.HTTP.Types
 

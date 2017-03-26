@@ -15,7 +15,7 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Domain
+  exposed-modules:     ReceiveOrder.Domain
                      , ReceiveOrder.Api
                      , ReceiveOrder.Handlers
                      , ReceiveOrder.Database

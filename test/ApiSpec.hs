@@ -2,16 +2,19 @@
 {-# LANGUAGE OverloadedStrings #-}
 module ApiSpec (spec) where
 
+import Data.Aeson (encode)
+import qualified Data.Map.Strict as M
+
 import Hasql.Pool (acquire)
 
-import Domain
-import qualified Data.Map.Strict as M
+import Network.HTTP.Types
+
 import ReceiveOrder.Api
+import ReceiveOrder.Domain
+
 import Test.Hspec
 import Test.Hspec.Wai
 import Test.Hspec.Wai.JSON
-import Data.Aeson (encode)
-import Network.HTTP.Types
 
 spec :: Spec
 spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")) $
