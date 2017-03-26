@@ -11,8 +11,8 @@ spec = describe "building a Receive Order from attributes" $ do
   describe "when passed valid attributes" $ do
     it "can create a Receive Order from the attributes provided" $ do
       let attributes = ReceiveOrderAttributes {
-        vendorName                  = "Main Vendor",
-        receiveOrderItemsAttributes = [
+        vendor_name         = "Main Vendor",
+        receive_order_items = [
           ReceiveOrderItemAttributes {
             skuCode                     = "First Sku",
             unitQuantityValue           = 23.0,
@@ -45,8 +45,8 @@ spec = describe "building a Receive Order from attributes" $ do
   describe "when passed invalid attributes" $ do
     it "rejects Receive Orders that have over 100 Receive Order Items" $ do
       let attributes = ReceiveOrderAttributes {
-        vendorName                  = "Main Vendor",
-        receiveOrderItemsAttributes = map (\n -> ReceiveOrderItemAttributes {
+        vendor_name         = "Main Vendor",
+        receive_order_items = map (\n -> ReceiveOrderItemAttributes {
           skuCode                     = "Sku " ++ (show n),
           unitQuantityValue           = 23.0,
           unitOfMeasureIntegrationKey = "Default UoM"
@@ -60,8 +60,8 @@ spec = describe "building a Receive Order from attributes" $ do
 
     it "requires that all of the Receive Order's Items' Skus are unique" $ do
       let attributes = ReceiveOrderAttributes {
-        vendorName                  = "Main Vendor",
-        receiveOrderItemsAttributes = [
+        vendor_name         = "Main Vendor",
+        receive_order_items = [
           ReceiveOrderItemAttributes {
             skuCode                     = "First Sku",
             unitQuantityValue           = 23.0,

@@ -18,8 +18,8 @@ import qualified Data.Map.Strict as M
 import Data.Time.Clock
 
 data ReceiveOrderAttributes = ReceiveOrderAttributes
-  { vendorName                  :: String
-  , receiveOrderItemsAttributes :: [ReceiveOrderItemAttributes]
+  { vendor_name         :: String
+  , receive_order_items :: [ReceiveOrderItemAttributes]
   } deriving (Show, Eq)
 
 data ReceiveOrderItemAttributes = ReceiveOrderItemAttributes
@@ -68,10 +68,10 @@ buildReceiveOrder = validateReceiveOrder . receiveOrderFromAttributes
 
   receiveOrderFromAttributes :: ReceiveOrderAttributes -> ReceiveOrder
   receiveOrderFromAttributes attributes = ReceiveOrder {
-    vendor             = vendorName attributes,
+    vendor             = vendor_name attributes,
     expectedDeliveryAt = Nothing,
     reference          = Nothing,
-    receiveOrderItems  = buildReceiveOrderItem <$> receiveOrderItemsAttributes attributes
+    receiveOrderItems  = buildReceiveOrderItem <$> receive_order_items attributes
   }
 
   buildReceiveOrderItem :: ReceiveOrderItemAttributes -> ReceiveOrderItem

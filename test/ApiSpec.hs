@@ -54,8 +54,8 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
     receiveOrderAttributes :: M.Map String ReceiveOrderAttributes
     receiveOrderAttributes = M.singleton "cid_1" $
       ReceiveOrderAttributes {
-        vendorName = "test vendor",
-        receiveOrderItemsAttributes = [
+        vendor_name = "test vendor",
+        receive_order_items = [
           ReceiveOrderItemAttributes {
             skuCode = "testsku",
             unitQuantityValue = 1.0,
@@ -67,8 +67,8 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
     erroneousAttributes :: M.Map String ReceiveOrderAttributes
     erroneousAttributes = M.singleton "cid_1" $ 
       ReceiveOrderAttributes {
-        vendorName = "test vendor",
-        receiveOrderItemsAttributes = (map (const ReceiveOrderItemAttributes 
+        vendor_name = "test vendor",
+        receive_order_items = (map (const ReceiveOrderItemAttributes 
           {
             skuCode = "testsku",
             unitQuantityValue = 1.0,
