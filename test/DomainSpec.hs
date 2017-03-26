@@ -88,3 +88,20 @@ spec = describe "building a Receive Order from attributes" $ do
         full_messages = [ "Can only have 100 order items per Receive Order" ],
         errors = M.singleton "base" [ "Can only have 100 order items per Receive Order" ]
       })
+
+    it "rejects Receive Orders that have an Item with a negative quantity" $ do
+      let attributes = ReceiveOrderAttributes {
+        vendor_name         = "Main Vendor",
+        receive_order_items = [
+          ReceiveOrderItemAttributes {
+            sku_id                          = 1,
+            unit_quantity_value             = -999.99,
+            unit_of_measure_integration_key = "Default UoM"
+          }
+        ]
+      }
+
+      buildReceiveOrder attributes `shouldBe` (Left ReceiveOrderErrors {
+        full_messages = [ "Receive Order Item unit quantity must be greater than or equal to 0" ],
+        errors = M.singleton "receive_order_item.unit_quantity" [ "unit quantity must be greater than or equal to 0" ]
+      })
