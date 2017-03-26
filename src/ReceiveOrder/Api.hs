@@ -14,10 +14,9 @@ import Domain
 import ReceiveOrder.Handlers
 import ReceiveOrder.Database
 
-type API = "receive_orders" :> ReqBody '[JSON] (ByCid ReceiveOrderAttributes) :> Post '[JSON] ReceiveOrdersResponse
+type API = "receive_orders" :> ReqBody '[JSON] ReceiveOrdersRequest :> Post '[JSON] ReceiveOrdersResponse
 
 newtype ReceiveOrdersResponse = ReceiveOrdersResponse (ByCid (Either ReceiveOrderErrors ReceiveOrder))
-
 instance ToJSON ReceiveOrdersResponse where
   toJSON (ReceiveOrdersResponse r) = toJSON $ fmap (either toJSON toJSON) r
 

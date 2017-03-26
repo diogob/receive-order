@@ -7,6 +7,7 @@ import Hasql.Pool (acquire)
 import Domain
 import qualified Data.Map.Strict as M
 import ReceiveOrder.Api
+import ReceiveOrder.Handlers
 import Test.Hspec
 import Test.Hspec.Wai
 import Test.Hspec.Wai.JSON
@@ -51,8 +52,8 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
     app = serve api . server
     postReceiveOrders = request methodPost "/receive_orders" [(hContentType, "application/json")] . encode
 
-    receiveOrderAttributes :: M.Map String ReceiveOrderAttributes
-    receiveOrderAttributes = M.singleton "cid_1" $
+    receiveOrderAttributes :: ReceiveOrdersRequest
+    receiveOrderAttributes = ReceiveOrdersRequest . M.singleton "cid_1" $
       ReceiveOrderAttributes {
         vendor_name = "test vendor",
         receive_order_items = [
@@ -64,8 +65,8 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
         ]
       }
 
-    erroneousAttributes :: M.Map String ReceiveOrderAttributes
-    erroneousAttributes = M.singleton "cid_1" $ 
+    erroneousAttributes :: ReceiveOrdersRequest
+    erroneousAttributes = ReceiveOrdersRequest . M.singleton "cid_1" $ 
       ReceiveOrderAttributes {
         vendor_name = "test vendor",
         receive_order_items = (map (const ReceiveOrderItemAttributes 
