@@ -33,6 +33,32 @@ buildReceiveOrderItem itemAttributes = ReceiveOrderItem {
   }
 }
 
+-- Exercise 2: Implement this validation.
+validateNumberOfItems :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
+validateNumberOfItems = validate ((< maxNumberOfReceiveOrderItems) . length . receiveOrderItems)
+  [ "Can only have 100 order items per Receive Order" ]
+  (M.singleton "base" [ "Can only have 100 order items per Receive Order" ])
+
+-- Exercise 3: Implement this validation too.
+validatePositiveUnitQuantities :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
+validatePositiveUnitQuantities = validate (all ((> 0) . value . quantity) . receiveOrderItems)
+  [ "Receive Order Item unit quantity must be greater than or equal to 0" ]
+  (M.singleton "receive_order_item.unit_quantity" [ "unit quantity must be greater than or equal to 0" ])
+
+-- Exercise 4: Compose the two validations together.
+validateReceiveOrder :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
+validateReceiveOrder = validateNumberOfItems >=> validatePositiveUnitQuantities
+
+-- Exercise 5: Abstract the commonality of these two validations into a higher-order function.
+validate :: (ReceiveOrder -> Bool) -> [String] -> M.Map String [String] -> ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
+validate validator fullMessages errors receiveOrder
+  | not $ validator receiveOrder =
+    Left $ ReceiveOrderErrors {
+      full_messages = fullMessages,
+      errors = errors
+    }
+  | otherwise = Right receiveOrder
+
 -- Exercise 6: Implement this roll-up function.
 rollUpQuantities :: ReceiveOrder -> ReceiveOrder
 rollUpQuantities ro@ReceiveOrder { receiveOrderItems = items } =
@@ -53,30 +79,3 @@ rollUpQuantities ro@ReceiveOrder { receiveOrderItems = items } =
       value         = (value . quantity) item + (sum $ fmap (value . quantity) items)
     }
   }
-
--- Exercise 5: Abstract the commonality of these two validations into a higher-order function.
-validate :: (ReceiveOrder -> Bool) -> [String] -> M.Map String [String] -> ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
-validate validator fullMessages errors receiveOrder
-  | not $ validator receiveOrder =
-    Left $ ReceiveOrderErrors {
-      full_messages = fullMessages,
-      errors = errors
-    }
-  | otherwise = Right receiveOrder
-
--- Exercise 4: Compose the two validations together.
-validateReceiveOrder :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
-validateReceiveOrder = validateNumberOfItems >=> validatePositiveUnitQuantities
-
--- Exercise 2: Implement this validation.
-validateNumberOfItems :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
-validateNumberOfItems = validate ((< maxNumberOfReceiveOrderItems) . length . receiveOrderItems)
-  [ "Can only have 100 order items per Receive Order" ]
-  (M.singleton "base" [ "Can only have 100 order items per Receive Order" ])
-
--- Exercise 3: Implement this validation too.
-validatePositiveUnitQuantities :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
-validatePositiveUnitQuantities = validate (all ((> 0) . value . quantity) . receiveOrderItems)
-  [ "Receive Order Item unit quantity must be greater than or equal to 0" ]
-  (M.singleton "receive_order_item.unit_quantity" [ "unit quantity must be greater than or equal to 0" ])
-
