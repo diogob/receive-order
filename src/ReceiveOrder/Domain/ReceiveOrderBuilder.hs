@@ -6,6 +6,7 @@ import Control.Monad
 
 import Data.Function
 import Data.List
+import qualified Data.List.NonEmpty as N
 import Data.Ord
 import qualified Data.Map.Strict as M
 
@@ -61,8 +62,9 @@ validate validator fullMessages errors receiveOrder
 
 -- Exercise 6: Implement this roll-up function.
 rollUpQuantities :: ReceiveOrder -> ReceiveOrder
-rollUpQuantities ro@ReceiveOrder { receiveOrderItems = items } =
-  ro { receiveOrderItems = (fmap rollUp . groupBySku . sortBySku) $ items }
+rollUpQuantities ro@ReceiveOrder { receiveOrderItems = items }
+  | null items = ro
+  | otherwise = ro { receiveOrderItems = (fmap rollUp . fmap N.fromList . groupBySku . sortBySku) $ items }
   where
 
   sortBySku :: [ReceiveOrderItem] -> [ReceiveOrderItem]
@@ -71,11 +73,13 @@ rollUpQuantities ro@ReceiveOrder { receiveOrderItems = items } =
   groupBySku :: [ReceiveOrderItem] -> [[ReceiveOrderItem]]
   groupBySku = groupBy ((==) `on` skuId)
 
-  rollUp :: [ReceiveOrderItem] -> ReceiveOrderItem
-  rollUp []           = undefined
-  rollUp (item:items) = item {
+  rollUp :: N.NonEmpty ReceiveOrderItem -> ReceiveOrderItem
+  rollUp (item N.:| items) = item {
     quantity = Quantity {
       unitOfMeasure = unitOfMeasure . quantity $ item,
-      value         = (value . quantity) item + (sum $ fmap (value . quantity) items)
+      value         = orderQuantity item + (sum $ fmap orderQuantity items)
     }
   }
+
+  orderQuantity :: ReceiveOrderItem -> Double
+  orderQuantity = (value . quantity)
