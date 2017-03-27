@@ -59,15 +59,11 @@ validatePositiveUnitQuantities ro@ReceiveOrder { receiveOrderItems = items }
 validateReceiveOrder :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
 validateReceiveOrder = validateNumberOfItems >=> validatePositiveUnitQuantities
 
--- Exercise 5: Abstract the commonality of these two validations into a higher-order function.
-validate :: (ReceiveOrder -> Bool) -> [String] -> M.Map String [String] -> ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
-validate validator fullMessages errors receiveOrder
-  | not $ validator receiveOrder =
-    Left $ ReceiveOrderErrors {
-      full_messages = fullMessages,
-      errors = errors
-    }
-  | otherwise = Right receiveOrder
+-- Exercise 4: Abstract the commonality of these two validations into a higher-order function.
+type Messages = [String]
+type ErrorsMap = M.Map String Messages
+validate :: (ReceiveOrder -> Bool) -> Messages -> ErrorsMap -> ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
+validate = undefined
 
 -- Exercise 6: Implement this roll-up function.
 rollUpQuantities :: ReceiveOrder -> ReceiveOrder
