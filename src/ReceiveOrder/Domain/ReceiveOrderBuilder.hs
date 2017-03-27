@@ -46,7 +46,6 @@ validatePositiveUnitQuantities = validate (all ((> 0) . value . quantity) . rece
   [ "Receive Order Item unit quantity must be greater than or equal to 0" ]
   (M.singleton "receive_order_item.unit_quantity" [ "unit quantity must be greater than or equal to 0" ])
 
--- Exercise 4: Compose the two validations together.
 validateReceiveOrder :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
 validateReceiveOrder = validateNumberOfItems >=> validatePositiveUnitQuantities
 
