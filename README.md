@@ -4,7 +4,6 @@ Create a HTTP endpoint to create multiple receive orders.
 
 ## Requirements
 
-* [PostgreSQL](http://postgresapp.com/)
 * [Haskell stack tool](https://docs.haskellstack.org/en/stable/README/) (for development only)
 
 ## Development Setup
