@@ -15,7 +15,7 @@ maxNumberOfReceiveOrderItems = 100
 
 -- Exercise 1: Wire it all together.
 buildReceiveOrder :: ReceiveOrderAttributes -> Either ReceiveOrderErrors ReceiveOrder
-buildReceiveOrder = validateReceiveOrder . rollUpQuantities . receiveOrderFromAttributes
+buildReceiveOrder = undefined . receiveOrderFromAttributes
 
 receiveOrderFromAttributes :: ReceiveOrderAttributes -> ReceiveOrder
 receiveOrderFromAttributes attributes = ReceiveOrder {
