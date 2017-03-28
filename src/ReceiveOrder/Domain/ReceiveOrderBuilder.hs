@@ -65,7 +65,6 @@ type ErrorsMap = M.Map String Messages
 validate :: (ReceiveOrder -> Bool) -> Messages -> ErrorsMap -> ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
 validate = undefined
 
--- Exercise 6: Implement this roll-up function.
 rollUpQuantities :: ReceiveOrder -> ReceiveOrder
 rollUpQuantities ro@ReceiveOrder { receiveOrderItems = items }
   | null items = ro
