@@ -38,7 +38,7 @@ buildReceiveOrderItem itemAttributes = ReceiveOrderItem {
 validateNumberOfItems :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
 validateNumberOfItems ro@ReceiveOrder { receiveOrderItems = items }
     | error "Implement exercise 2" =
-      Left $ ReceiveOrderErrors {
+      Left ReceiveOrderErrors {
         full_messages = [ "Can only have 100 order items per Receive Order" ],
         errors = M.singleton "base" [ "Can only have 100 order items per Receive Order" ]
       }
@@ -50,7 +50,7 @@ validateNumberOfItems ro@ReceiveOrder { receiveOrderItems = items }
 validatePositiveUnitQuantities :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
 validatePositiveUnitQuantities ro@ReceiveOrder { receiveOrderItems = items }
   | error "Implement exercise 3" =
-    Left $ ReceiveOrderErrors {
+    Left ReceiveOrderErrors {
       full_messages = [ "Receive Order Item unit quantity must be greater than or equal to 0" ],
       errors = M.singleton "receive_order_item.unit_quantity" [ "unit quantity must be greater than or equal to 0" ]
     }
@@ -68,7 +68,7 @@ validate = error "Implement exercise 4"
 rollUpQuantities :: ReceiveOrder -> ReceiveOrder
 rollUpQuantities ro@ReceiveOrder { receiveOrderItems = items }
   | null items = ro
-  | otherwise = ro { receiveOrderItems = (fmap rollUp . fmap N.fromList . groupBySku . sortBySku) $ items }
+  | otherwise = ro { receiveOrderItems = (fmap rollUp . fmap N.fromList . groupBySku . sortBySku) items }
   where
 
   sortBySku :: [ReceiveOrderItem] -> [ReceiveOrderItem]
@@ -81,9 +81,9 @@ rollUpQuantities ro@ReceiveOrder { receiveOrderItems = items }
   rollUp (item N.:| items) = item {
     quantity = Quantity {
       unitOfMeasure = unitOfMeasure . quantity $ item,
-      value         = orderQuantity item + (sum $ fmap orderQuantity items)
+      value         = orderQuantity item + sum (fmap orderQuantity items)
     }
   }
 
   orderQuantity :: ReceiveOrderItem -> Double
-  orderQuantity = (value . quantity)
+  orderQuantity = value . quantity
