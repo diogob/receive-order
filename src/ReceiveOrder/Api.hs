@@ -14,14 +14,10 @@ import ReceiveOrder.Database
 import ReceiveOrder.Domain
 import ReceiveOrder.Handlers
 
-type API = "receive_orders" :> ReqBody '[JSON] ReceiveOrdersRequest :> Post '[JSON] ReceiveOrdersResponse
-
-newtype ReceiveOrdersResponse = ReceiveOrdersResponse (ByCid (Either ReceiveOrderErrors ReceiveOrder))
-instance ToJSON ReceiveOrdersResponse where
-  toJSON (ReceiveOrdersResponse r) = toJSON $ fmap (either toJSON toJSON) r
+type API = "receive_orders" :> ReqBody '[JSON] ReceiveOrdersRequest :> Post '[JSON] (ByCid ReceiveOrder)
 
 api :: Proxy API
 api = Proxy
 
 server :: Pool -> Server API
-server = ((fmap . fmap) ReceiveOrdersResponse) . massCreate . createReceiveOrders
+server = massCreate . createReceiveOrders

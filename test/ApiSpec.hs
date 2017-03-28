@@ -48,7 +48,7 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
                 }
               }|]
 
-            postReceiveOrders erroneousAttributes `shouldRespondWith` errors
+            postReceiveOrders erroneousAttributes `shouldRespondWith` errors {matchStatus = 503, matchHeaders = []}
   where
 
     app = serve api . server
@@ -73,10 +73,10 @@ spec = with (app <$> acquire (10, 10, "postgres://localhost/receive_order_test")
          sku_id                          = n,
          unit_quantity_value             = 1.0,
          unit_of_measure_integration_key = "uomkey"
-       } 
+       }
 
     erroneousAttributes :: ReceiveOrdersRequest
-    erroneousAttributes = ReceiveOrdersRequest . M.singleton "cid_1" $ 
+    erroneousAttributes = ReceiveOrdersRequest . M.singleton "cid_1" $
       ReceiveOrderAttributes {
         vendor_name         = "test vendor",
         receive_order_items = map createItemAttributes [0..100]
