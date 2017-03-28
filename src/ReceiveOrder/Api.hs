@@ -21,4 +21,4 @@ api = Proxy
 
 -- Exercise 5: Use massCreate and createReceiveOrders to create a function that can respond to a request from a database pool
 server :: Pool -> Server API
-server = undefined
+server = error "Implement excercise 5"

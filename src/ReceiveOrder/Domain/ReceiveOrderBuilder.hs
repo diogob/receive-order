@@ -15,7 +15,7 @@ maxNumberOfReceiveOrderItems = 100
 
 -- Exercise 1: Wire it all together.
 buildReceiveOrder :: ReceiveOrderAttributes -> Either ReceiveOrderErrors ReceiveOrder
-buildReceiveOrder = undefined . receiveOrderFromAttributes
+buildReceiveOrder = error "Implement exercise 1" . receiveOrderFromAttributes
 
 receiveOrderFromAttributes :: ReceiveOrderAttributes -> ReceiveOrder
 receiveOrderFromAttributes attributes = ReceiveOrder {
@@ -37,7 +37,7 @@ buildReceiveOrderItem itemAttributes = ReceiveOrderItem {
 -- Exercise 2: Implement this validation.
 validateNumberOfItems :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
 validateNumberOfItems ro@ReceiveOrder { receiveOrderItems = items }
-    | undefined =
+    | error "Implement exercise 2" =
       Left $ ReceiveOrderErrors {
         full_messages = [ "Can only have 100 order items per Receive Order" ],
         errors = M.singleton "base" [ "Can only have 100 order items per Receive Order" ]
@@ -49,7 +49,7 @@ validateNumberOfItems ro@ReceiveOrder { receiveOrderItems = items }
 -- Exercise 3: Implement this validation too.
 validatePositiveUnitQuantities :: ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
 validatePositiveUnitQuantities ro@ReceiveOrder { receiveOrderItems = items }
-  | undefined =
+  | error "Implement exercise 3" =
     Left $ ReceiveOrderErrors {
       full_messages = [ "Receive Order Item unit quantity must be greater than or equal to 0" ],
       errors = M.singleton "receive_order_item.unit_quantity" [ "unit quantity must be greater than or equal to 0" ]
@@ -63,7 +63,7 @@ validateReceiveOrder = validateNumberOfItems >=> validatePositiveUnitQuantities
 type Messages = [String]
 type ErrorsMap = M.Map String Messages
 validate :: (ReceiveOrder -> Bool) -> Messages -> ErrorsMap -> ReceiveOrder -> Either ReceiveOrderErrors ReceiveOrder
-validate = undefined
+validate = error "Implement exercise 4"
 
 rollUpQuantities :: ReceiveOrder -> ReceiveOrder
 rollUpQuantities ro@ReceiveOrder { receiveOrderItems = items }
