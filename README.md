@@ -2,6 +2,14 @@
 
 Create a HTTP endpoint to create multiple receive orders.
 
+## Quickstart
+
+If you are using a macOS just type:
+
+    ./setup.sh
+
+This will install stack, some haskell tools, the IntelliJ IDEA CE and build the project with tests.
+
 ## Requirements
 
 * [Haskell stack tool](https://docs.haskellstack.org/en/stable/README/) (for development only)
